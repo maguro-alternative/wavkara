@@ -3,6 +3,8 @@ import wave
 import sys
 from pydub import AudioSegment
 
+import time
+
 chunk = 1024
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
@@ -35,6 +37,8 @@ def myaud():
         frames_per_buffer=chunk
     )
 
+    start = time.time()
+
     all = []
     for i in range(0, int(RATE / chunk * RECORD_SECONDS)):
         data = stream.read(chunk)
@@ -52,3 +56,7 @@ def myaud():
     out.setframerate(RATE)
     out.writeframes(data)
     out.close()
+    
+    end = time.time()
+    # 処理時間表示
+    print("Total elapsed time : {}[sec]".format(round(end - start, 4)))

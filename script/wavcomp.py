@@ -36,20 +36,20 @@ def onewav():
     values.append("../wav/sample_music.wav")
     values.append("../wav/sample_voice.wav")
 
-    base_sound = AudioSegment.from_file(values[0], format="wav")
-    time = base_sound.duration_seconds
-
-    base_sound2 = AudioSegment.from_file(values[1], format="wav")
-    time2 = base_sound2.duration_seconds
+    time=wavsecond(values[0]).duration_seconds
+    time2=wavsecond(values[1]).duration_seconds
 
     if time>=60 and time2>=60:
         speed = time/60
         speed2 = time2/60
 
         print("原曲は加速する.....")
-        base_sound = base_sound.speedup(playback_speed=speed, crossfade=0)
+        base_sound = wavsecond(values[0]).speedup(playback_speed=speed, crossfade=0)
         print("比較は加速する.....")
-        base_sound2 = base_sound2.speedup(playback_speed=speed2, crossfade=0)
+        base_sound2 = wavsecond(values[1]).speedup(playback_speed=speed2, crossfade=0)
+    else :
+        base_sound=wavsecond(values[0])
+        base_sound2=wavsecond(values[1])
 
     base_sound.export("one.wav", format="wav")
     base_sound2.export("two.wav", format="wav")
@@ -69,9 +69,6 @@ def wavcomp():
     # 処理時間計測開始
     start = time.time()
 
-    # (1) wavファイル読み込み
-    print("#1 [Wav files read]")
-
     path_list=[]
     path_list.append("one.wav")
     path_list.append("two.wav")
@@ -82,19 +79,6 @@ def wavcomp():
         x, fs = librosa.load(path, getSamplingFrequency(path))
         x_and_fs_list.append((x, fs))
         print(path+" サンプリング周波数 "+str(getSamplingFrequency(path))+"Hz")
-
-    # 読み込んだwavファイルのパスを一覧表示
-    print("> | {} : {}".format("Index", "Path"))
-    for index in range(len(path_list)):
-        print("> | {} : {}".format(index + 1, path_list[index]))
-
-    print("")
-
-    # (2) 特徴抽出
-    print("#2 [Feature extraction]")
-
-    # 使用する特徴量を表示
-    print("> Selected feature type : {}".format(feature_type.name))
 
     # 使用する特徴量を抽出し、リストに格納
     feature_list = []
@@ -112,15 +96,9 @@ def wavcomp():
     del x_and_fs_list
     gc.collect()
 
-    print("")
-
-    # (3) 類似度計算
-    print("#3 [Evaluation]")
-
     # 比較の基準とする特徴量
     reference_index = 0
     reference_feature = feature_list[reference_index]
-    print("> Reference : {} ({})".format(reference_index + 1, path_list[reference_index]))
 
     del path_list
     gc.collect()
@@ -157,6 +135,14 @@ def wavmain():
     onewav()
     eval=wavcomp()
     return round(eval, 4)
+
+def wavsecond(wav):
+    base_sound = AudioSegment.from_file(wav, format="wav")
+    return base_sound
+
+def wavsecond2(wav):
+    base_sound = AudioSegment.from_file(wav, format="wav")
+    return base_sound.duration_seconds
 
 if __name__ == "__main__":
     wavmain()
