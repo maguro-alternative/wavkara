@@ -10,7 +10,7 @@ from youdl import you
 from wavcomp import wavmain
 from wavcomp import wavsecond2
 
-TOKEN = 'ODU0MDA1NDQ4MTg1MzQ4MDk3.YMdojQ.a1Vr_3lqSJ9URCMul3VA9v3mQ9s'
+TOKEN = ''
 
 client = discord.Client()
 
